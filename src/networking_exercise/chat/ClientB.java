@@ -25,6 +25,7 @@ public class ClientB {
 			ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 			out.writeLong(time);
 			Log.info("CLIENT B send long object to server.......");
+			// chiusura stream I/O
 			out.close();
 			
 			// client riceve dal server una lista di oggetti di tipo Message
@@ -34,9 +35,8 @@ public class ClientB {
 			ArrayList<Message> listMessage = (ArrayList<Message>)in.readObject();
 			log.info("CLIENT B received message by server.......");
 			log.info(listMessage.toString());
-			
 			// chiusura stream I/O
-//			in.close();
+			in.close();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,16 +1,18 @@
 package networking_exercise.chat;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
-
-import com.oracle.tools.packager.Log;
 
 public class ServerB {
 	
@@ -23,7 +25,7 @@ public class ServerB {
 			Socket client = null;
 			ObjectInputStream in = null;
 			ObjectOutputStream out = null;
-			ArrayList<Message> messList = null;
+			List<Message> messList = null;
 			Message mess = null;
 			while(true) {
 				log.info("SERVER B wait connection for anyone client......");
@@ -38,12 +40,8 @@ public class ServerB {
 				log.info(readValue.toString());
 				
 				// invio al client una list di oggetti Message
-				messList = new ArrayList<Message>();
-				for(int i=0; i<4; i++) {
-					mess = new Message();
-					mess.setTextMessage("aeiou" + System.nanoTime());
-					messList.add(mess);
-				}
+				// messList = readAllMessage(new File("C:\\Users\\titano\\eclipse-workspace\\networking_exercise\\backup_message"));
+				messList = readMessage(new File("C:\\\\Users\\\\titano\\\\eclipse-workspace\\\\networking_exercise\\\\backup_message"), "1576685724933");
 				Socket sock = new Socket(InetAddress.getLocalHost(), 10010);
 				out = new ObjectOutputStream(sock.getOutputStream());
 				out.writeObject(messList);
@@ -54,5 +52,52 @@ public class ServerB {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static List<Message> readAllMessage(File fìle){
+		File file = new File("C:\\Users\\titano\\eclipse-workspace\\networking_exercise\\backup_message");
+		File[] files = file.listFiles();
+		List<File> listFiles = Arrays.asList(files);
+		List<Message> listMessages = new ArrayList<Message>();
+		listFiles.forEach( (f) -> {
+				try {
+					ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
+					Message mess = (Message) in.readObject();
+					listMessages.add(mess);
+				} catch (IOException | ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		);
+		
+		return  listMessages;
+	}
+	
+	public static List<Message> readMessage(File f, String time) {
+		File file = new File("C:\\Users\\titano\\eclipse-workspace\\networking_exercise\\backup_message");
+		File[] files = file.listFiles();
+		List<File> listFiles = Arrays.asList(files);
+		String timeCompare = time+".ser";
+		List<File> listFilesMatch = new ArrayList<File>();
+		
+		listFiles.forEach( (fil) ->{ 
+					if(fil.getName().compareTo(timeCompare) > 0) listFilesMatch.add(fil);
+				});
+	
+		List<Message> listMessages = new ArrayList<Message>();
+		listFilesMatch.forEach( (fil) -> {
+			try {
+					ObjectInputStream in = new ObjectInputStream(new FileInputStream(fil));
+					Message mess = (Message) in.readObject();
+					listMessages.add(mess);
+				} catch (IOException | ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		);
+		
+		return listMessages;
 	}
 }
