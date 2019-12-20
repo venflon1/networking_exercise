@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+import com.oracle.tools.packager.Log;
+
 public class ServerB {
 	
 	private static Logger log = Logger.getLogger(ServerB.class.getName());
@@ -28,24 +30,24 @@ public class ServerB {
 			List<Message> messList = null;
 			Message mess = null;
 			while(true) {
-				log.info("SERVER B wait connection for anyone client......");
+//				log.info("SERVER B wait connection for anyone client......");
 				client = serverSocket.accept();
-				log.info("SERVER B connection established to client with ip:"+client.getInetAddress()
-				         + ", port:"+client.getPort());
+//				log.info("SERVER B connection established to client with ip:"+client.getInetAddress()
+//				         + ", port:"+client.getPort());
 				
 				// leggo quello che il client mi invia
 				in = new ObjectInputStream(client.getInputStream());
 				Long readValue = in.readLong();
-				log.info("received message for CLIENT (ip, port)=("+client.getInetAddress()+","+ client.getPort() +")");
-				log.info(readValue.toString());
+//				log.info("received message for CLIENT (ip, port)=("+client.getInetAddress()+","+ client.getPort() +")");
+//				log.info(readValue.toString());
 				
 				// invio al client una list di oggetti Message
 				// messList = readAllMessage(new File("C:\\Users\\titano\\eclipse-workspace\\networking_exercise\\backup_message"));
-				messList = readMessage(new File("C:\\\\Users\\\\titano\\\\eclipse-workspace\\\\networking_exercise\\\\backup_message"), "1576685724933");
+				messList = readMessage(new File("C:\\Users\\titano\\eclipse-workspace\\networking_exercise\\backup_message"), readValue+"");
 				Socket sock = new Socket(InetAddress.getLocalHost(), 10010);
 				out = new ObjectOutputStream(sock.getOutputStream());
 				out.writeObject(messList);
-				log.info("SERVER B send object to CLIENT (ip, port)= ("+client.getInetAddress()+","+ client.getPort() +")"); 
+//				log.info("SERVER B send object to CLIENT (ip, port)= ("+client.getInetAddress()+","+ client.getPort() +")"); 
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -84,7 +86,7 @@ public class ServerB {
 		listFiles.forEach( (fil) ->{ 
 					if(fil.getName().compareTo(timeCompare) > 0) listFilesMatch.add(fil);
 				});
-	
+		
 		List<Message> listMessages = new ArrayList<Message>();
 		listFilesMatch.forEach( (fil) -> {
 			try {

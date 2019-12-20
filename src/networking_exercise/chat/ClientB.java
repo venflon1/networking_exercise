@@ -21,10 +21,10 @@ public class ClientB {
 			Socket client = new Socket(InetAddress.getLocalHost(), 9090);
 			
 			// invio un long al server che e' in ascolto sulla porta 9090
-			Long time = System.currentTimeMillis();
+			Long time = new Long(1576837101266L);
 			ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 			out.writeLong(time);
-			Log.info("CLIENT B send long object to server.......");
+//			Log.info("CLIENT B send long object to server.......");
 			// chiusura stream I/O
 			out.close();
 			
@@ -33,8 +33,9 @@ public class ClientB {
 			Socket myClient = serverSock.accept();
 			ObjectInputStream in = new ObjectInputStream(myClient.getInputStream());
 			ArrayList<Message> listMessage = (ArrayList<Message>)in.readObject();
-			log.info("CLIENT B received message by server.......");
-			log.info(listMessage.toString());
+//			log.info("CLIENT B received message by server.......");
+//			log.info(listMessage.toString());
+			listMessage.forEach((mess) -> System.out.println(mess));
 			// chiusura stream I/O
 			in.close();
 		} catch (UnknownHostException e) {
